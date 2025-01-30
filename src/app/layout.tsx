@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-//import { Geist, Geist_Mono } from "next/font/google";
+import { Stick_No_Bills } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const stickNoBills = Stick_No_Bills({
+  variable: "--font-stick-no-bills",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "BRUM V.5.0",
@@ -24,9 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      //className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${stickNoBills.variable} antialiased`}>
+        <div
+          style={{ fontFamily: "var(--font-stick-no-bills" }}
+          className="antialiased justify-center items-center flex bg-slate-800 text-white font-semibold text-xl py-2.5"
+        >
+          <Link href={"/"}>Herzlich wilkommen</Link>
+        </div>
         {children}
       </body>
     </html>
