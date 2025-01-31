@@ -3,8 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const FormSchema = z.object({
   srednieSpalanie: z.coerce.number(),
@@ -44,50 +43,155 @@ export function InputyDlaTrasy() {
     },
   });
 
+  const [caloscBezOsob, setCaloscBezOsob] = useState(0);
+  const [caloscZOsobami, setCaloscZOsobami] = useState(0);
+  const [zaOsobe, setZaOsobe] = useState(0);
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    const caloscBezOsob = parseFloat(
+      (
+        (data.srednieSpalanie / 100) * data.odleglosc * data.cenaPaliwa +
+        data.parkingi +
+        data.autostrada
+      ).toFixed(2)
+    );
+    setCaloscBezOsob(caloscBezOsob);
+
+    const caloscZOsobami = parseFloat(
+      (
+        (data.srednieSpalanie / 100) *
+          data.odleglosc *
+          data.cenaPaliwa *
+          (1 + data.procentZaOsobe / 100) +
+        data.parkingi +
+        data.autostrada
+      ).toFixed(2)
+    );
+    setCaloscZOsobami(caloscZOsobami);
+
+    const zaOsobe = parseFloat((caloscZOsobami / data.liczbaOsob).toFixed(2));
+    setZaOsobe(zaOsobe);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="m-3">
-        <FormField
-          control={form.control}
-          name="srednieSpalanie"
-          render={({ field }) => (
-            <FormItem className="flex m-0 p-0 items-center justify-center">
-              <FormLabel>Średnie spalanie:</FormLabel>
-              <FormControl>
-                <Input placeholder="7.5" {...field} />
-              </FormControl>
-              <FormDescription>l/100km</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="cenaPaliwa"
-          render={({ field }) => (
-            <FormItem className="flex m-0 p-0 items-center justify-center">
-              <FormLabel>Cena paliwa:</FormLabel>
-              <FormControl>
-                <Input placeholder="6.40" {...field} />
-              </FormControl>
-              <FormDescription>zł</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Licz</Button>
-      </form>
-    </Form>
+    <div className="px-5 m-3">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="srednieSpalanie"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Średnie spalanie:</FormLabel>
+                <FormControl>
+                  <Input placeholder="7.5" {...field} />
+                </FormControl>
+                <FormDescription>l/100km</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cenaPaliwa"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Cena paliwa:</FormLabel>
+                <FormControl>
+                  <Input placeholder="6.40" {...field} />
+                </FormControl>
+                <FormDescription>zł/l</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="odleglosc"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Odległość:</FormLabel>
+                <FormControl>
+                  <Input placeholder="100" {...field} />
+                </FormControl>
+                <FormDescription>km</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="liczbaOsob"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Liczba osób:</FormLabel>
+                <FormControl>
+                  <Input placeholder="2" {...field} />
+                </FormControl>
+                <FormDescription>os.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="procentZaOsobe"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Procent za osobę:</FormLabel>
+                <FormControl>
+                  <Input placeholder="8" {...field} />
+                </FormControl>
+                <FormDescription>%</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="parkingi"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Parkingi:</FormLabel>
+                <FormControl>
+                  <Input placeholder="0" {...field} />
+                </FormControl>
+                <FormDescription>zł</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="autostrada"
+            render={({ field }) => (
+              <FormItem className="flex m-0 p-0 items-center justify-center">
+                <FormLabel>Autostrada:</FormLabel>
+                <FormControl>
+                  <Input placeholder="0" {...field} />
+                </FormControl>
+                <FormDescription>%</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Licz</Button>
+        </form>
+      </Form>
+      <div id="outputy">
+        <div id="caloscBezOsob">
+          <span>Całość bez osób: </span>
+          <span>{caloscBezOsob}zł</span>
+        </div>
+        <div id="caloscZOsobami">
+          <span>Całość z osobami: </span>
+          <span>{caloscZOsobami}zł</span>
+        </div>
+        <div id="zaOsobe">
+          <span>Za osobę: </span>
+          <span>{zaOsobe}zł</span>
+        </div>
+      </div>
+    </div>
   );
 }
