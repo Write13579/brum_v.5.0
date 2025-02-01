@@ -47,6 +47,7 @@ export function InputyDlaTrasy() {
   const [caloscZOsobami, setCaloscZOsobami] = useState(0);
   const [zaOsobe, setZaOsobe] = useState(0);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { watch, control } = form;
   const data = watch();
 

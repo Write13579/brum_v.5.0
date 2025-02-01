@@ -25,7 +25,7 @@ export default function RootLayout({
           style={{ fontFamily: "var(--font-stick-no-bills" }}
           className="antialiased justify-center items-center flex bg-slate-800 text-white font-semibold text-xl py-2.5"
         >
-          <Link href={"/"}>Herzlich wilkommen</Link>
+          <Link href={"/"}>Herzlich willkommen</Link>
         </div>
         {children}
       </body>
