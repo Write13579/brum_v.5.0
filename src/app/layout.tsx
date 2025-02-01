@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${stickNoBills.variable} antialiased`}>
+      <body className={`${stickNoBills.variable} antialiased bg-slate-200/75`}>
         <div
           style={{ fontFamily: "var(--font-stick-no-bills" }}
           className="antialiased justify-center items-center flex bg-slate-800 text-white font-semibold text-xl py-2.5"

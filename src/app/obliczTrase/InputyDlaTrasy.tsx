@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,7 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import OutputComp from "./outputComp";
 
 const FormSchema = z.object({
   srednieSpalanie: z.coerce.number(),
@@ -33,9 +33,9 @@ export function InputyDlaTrasy() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      srednieSpalanie: 0.0,
-      cenaPaliwa: 0.0,
-      odleglosc: 0,
+      srednieSpalanie: 7,
+      cenaPaliwa: 6.35,
+      odleglosc: 100,
       liczbaOsob: 1,
       procentZaOsobe: 5,
       parkingi: 0,
@@ -47,7 +47,10 @@ export function InputyDlaTrasy() {
   const [caloscZOsobami, setCaloscZOsobami] = useState(0);
   const [zaOsobe, setZaOsobe] = useState(0);
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const { watch, control } = form;
+  const data = watch();
+
+  useEffect(() => {
     const caloscBezOsob = parseFloat(
       (
         (data.srednieSpalanie / 100) * data.odleglosc * data.cenaPaliwa +
@@ -71,20 +74,20 @@ export function InputyDlaTrasy() {
 
     const zaOsobe = parseFloat((caloscZOsobami / data.liczbaOsob).toFixed(2));
     setZaOsobe(zaOsobe);
-  }
+  }, [data]);
 
   return (
     <div className="px-5 m-3">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="text-nowrap flex flex-col items-center mx-3 gap-1 justify-center">
           <FormField
             control={form.control}
             name="srednieSpalanie"
             render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Średnie spalanie:</FormLabel>
                 <FormControl>
-                  <Input placeholder="7.5" {...field} />
+                  <Input className="w-auto" placeholder="7.5" {...field} />
                 </FormControl>
                 <FormDescription>l/100km</FormDescription>
                 <FormMessage />
@@ -95,10 +98,10 @@ export function InputyDlaTrasy() {
             control={form.control}
             name="cenaPaliwa"
             render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Cena paliwa:</FormLabel>
                 <FormControl>
-                  <Input placeholder="6.40" {...field} />
+                  <Input className="w-auto" placeholder="6.40" {...field} />
                 </FormControl>
                 <FormDescription>zł/l</FormDescription>
                 <FormMessage />
@@ -109,10 +112,10 @@ export function InputyDlaTrasy() {
             control={form.control}
             name="odleglosc"
             render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Odległość:</FormLabel>
                 <FormControl>
-                  <Input placeholder="100" {...field} />
+                  <Input className="w-auto" placeholder="100" {...field} />
                 </FormControl>
                 <FormDescription>km</FormDescription>
                 <FormMessage />
@@ -123,10 +126,10 @@ export function InputyDlaTrasy() {
             control={form.control}
             name="liczbaOsob"
             render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Liczba osób:</FormLabel>
                 <FormControl>
-                  <Input placeholder="2" {...field} />
+                  <Input className="w-auto" placeholder="2" {...field} />
                 </FormControl>
                 <FormDescription>os.</FormDescription>
                 <FormMessage />
@@ -137,60 +140,58 @@ export function InputyDlaTrasy() {
             control={form.control}
             name="procentZaOsobe"
             render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Procent za osobę:</FormLabel>
                 <FormControl>
-                  <Input placeholder="8" {...field} />
-                </FormControl>
-                <FormDescription>%</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />{" "}
-          <FormField
-            control={form.control}
-            name="parkingi"
-            render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
-                <FormLabel>Parkingi:</FormLabel>
-                <FormControl>
-                  <Input placeholder="0" {...field} />
-                </FormControl>
-                <FormDescription>zł</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />{" "}
-          <FormField
-            control={form.control}
-            name="autostrada"
-            render={({ field }) => (
-              <FormItem className="flex m-0 p-0 items-center justify-center">
-                <FormLabel>Autostrada:</FormLabel>
-                <FormControl>
-                  <Input placeholder="0" {...field} />
+                  <Input className="w-auto" placeholder="8" {...field} />
                 </FormControl>
                 <FormDescription>%</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Licz</Button>
+          <FormField
+            control={form.control}
+            name="parkingi"
+            render={({ field }) => (
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
+                <FormLabel>Parkingi:</FormLabel>
+                <FormControl>
+                  <Input className="w-auto" placeholder="0" {...field} />
+                </FormControl>
+                <FormDescription>zł</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="autostrada"
+            render={({ field }) => (
+              <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
+                <FormLabel>Autostrada:</FormLabel>
+                <FormControl>
+                  <Input className="w-auto" placeholder="0" {...field} />
+                </FormControl>
+                <FormDescription>%</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
-      <div id="outputy">
-        <div id="caloscBezOsob">
-          <span>Całość bez osób: </span>
-          <span>{caloscBezOsob}zł</span>
-        </div>
-        <div id="caloscZOsobami">
-          <span>Całość z osobami: </span>
-          <span>{caloscZOsobami}zł</span>
-        </div>
-        <div id="zaOsobe">
-          <span>Za osobę: </span>
-          <span>{zaOsobe}zł</span>
-        </div>
+      <div id="outputy" className="mt-5 flex gap-3 w-full justify-center">
+        <OutputComp
+          liczba={caloscBezOsob}
+          opis="Całość bez osób"
+          kolor="#fca5a5"
+        />
+        <OutputComp
+          liczba={caloscZOsobami}
+          opis="Całość z osobami"
+          kolor="#86efac"
+        />
+        <OutputComp liczba={zaOsobe} opis="Za osobę" kolor="#d8b4fe" />
       </div>
     </div>
   );
