@@ -26,7 +26,7 @@ export default function OcrSpaceReader({
 
         if (result) {
           setRes(result);
-          setParsedText(result.ParsedResults[0].ParsedText || "");
+          setParsedText(result.ParsedResults[0].ParsedText || "NIE ZNALEZIONO");
           console.log(result.ParsedResults[0].ParsedText);
         }
       } catch (error) {
