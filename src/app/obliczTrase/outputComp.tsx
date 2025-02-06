@@ -26,7 +26,7 @@ export default function OutputComp({
           }}
           className="text-xl font-bold"
         >
-          {liczba ? (liczba !== Infinity ? liczba : 0) : 0}
+          {liczba ? (liczba !== Infinity ? liczba.toFixed(2) : 0) : 0}
         </div>
         <div className="text-white/70 text-sm">zł</div>
       </div>
