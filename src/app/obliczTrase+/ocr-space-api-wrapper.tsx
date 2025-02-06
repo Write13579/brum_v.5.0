@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ocrSpaceReader, OcrSpaceReaderType } from "./actions";
+import { ocrSpaceReader } from "./actions";
+import { OcrSpaceResponse } from "ocr-space-api-wrapper";
 
 export default function OcrSpaceReader({
   zdjecieBase64,
 }: {
   zdjecieBase64: Base64URLString;
 }) {
-  const [res, setRes] = useState<OcrSpaceReaderType | null | undefined>(null);
+  const [res, setRes] = useState<OcrSpaceResponse | null | undefined>(null);
   const [selectedImage, setSelectedImage] = useState<
     File | Base64URLString | null
   >(null);
@@ -18,14 +19,19 @@ export default function OcrSpaceReader({
   useEffect(() => {
     const fetchOCR = async () => {
       try {
-        const result: OcrSpaceReaderType = await ocrSpaceReader(zdjecieBase64);
-        console.log("result:    " + JSON.stringify(result, null, 2));
+        const result: OcrSpaceResponse | undefined = await ocrSpaceReader(
+          zdjecieBase64
+        );
+        //console.log("result:    " + JSON.stringify(result, null, 2));
         //console.log("zdjeciebase64:  " + zdjecieBase64);
 
         // setRes(result); // Aktualizacja stanu
-        setRes(result);
-        setParsedText(result.ParsedResults[0].ParsedText || "");
-        console.log(result.ParsedResults[0].ParsedText);
+
+        if (result) {
+          setRes(result);
+          setParsedText(result.ParsedResults[0].ParsedText || "");
+          console.log(result.ParsedResults[0].ParsedText);
+        }
       } catch (error) {
         console.error("Błąd OCR:", error);
       }
