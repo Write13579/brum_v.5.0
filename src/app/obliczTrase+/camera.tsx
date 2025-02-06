@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
-import OcrReader from "./tesseract";
 import OcrSpaceReader from "./ocr-space-api-wrapper";
+import Image from "next/image";
 
 export default function CameraUploader() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -67,10 +67,12 @@ export default function CameraUploader() {
       {imageSrc && (
         <div className="mt-4">
           <p className="text-lg font-semibold">Podgląd zdjęcia:</p>
-          <img
+          <Image
             src={imageSrc}
             alt="No photo / error"
             className="w-full max-w-md rounded-lg shadow-md"
+            width={350}
+            height={350}
           />
           <OcrSpaceReader zdjecieBase64={imageSrc} />
           {/* <OcrReader zdjecie={imageSrc} /> */}

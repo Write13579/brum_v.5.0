@@ -3,8 +3,6 @@
 import fs from "fs";
 import path from "path";
 
-const { ocrSpace } = require("ocr-space-api-wrapper");
-
 export async function uploadImage(base64Image: string) {
   try {
     if (!base64Image) {
@@ -29,7 +27,7 @@ export async function uploadImage(base64Image: string) {
 }
 
 export async function ocrSpaceReader(zdjecieBase64: Base64URLString) {
-  console.log(123);
+  const { ocrSpace } = require("ocr-space-api-wrapper");
 
   try {
     // Using your personal API key + base64 image + custom language

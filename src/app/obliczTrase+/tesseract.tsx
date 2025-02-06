@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createWorker } from "tesseract.js";
 
@@ -62,10 +63,11 @@ const OcrReader = ({ zdjecie }: { zdjecie: string }) => {
     <div>
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {selectedImage && (
-        <img
+        <Image
           src={URL.createObjectURL(selectedImage)}
           alt="Uploaded content"
           width={350}
+          height={350}
           style={{ marginTop: 15 }}
         />
       )}

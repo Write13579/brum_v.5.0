@@ -24,7 +24,7 @@ export default function OcrSpaceReader({
 
         // setRes(result); // Aktualizacja stanu
         setRes(result);
-        result && setParsedText(result.ParsedResults[0].ParsedText || "");
+        setParsedText(result.ParsedResults[0].ParsedText || "");
         console.log(result.ParsedResults[0].ParsedText);
       } catch (error) {
         console.error("Błąd OCR:", error);
