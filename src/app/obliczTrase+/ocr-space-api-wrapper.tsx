@@ -10,9 +10,6 @@ export default function OcrSpaceReader({
   zdjecieBase64: Base64URLString;
 }) {
   const [res, setRes] = useState<OcrSpaceResponse | null | undefined>(null);
-  const [selectedImage, setSelectedImage] = useState<
-    File | Base64URLString | null
-  >(null);
 
   const [ParsedText, setParsedText] = useState<string>("NOTHING");
 
@@ -38,20 +35,11 @@ export default function OcrSpaceReader({
     };
 
     fetchOCR();
-  }, [zdjecieBase64, selectedImage]);
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedImage(event.target.files[0]);
-      //   setOcrResult(""); // Reset OCR result
-      //   setOcrStatus(""); // Reset status
-    }
-  };
+  }, [zdjecieBase64]);
 
   return (
     <div id="alles">
       {" "}
-      <input type="file" accept="image/*" onChange={handleImageChange} />
       <div>Wynik OCR:</div>
       {res && res.ParsedResults && (
         <div>
