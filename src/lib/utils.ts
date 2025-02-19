@@ -25,3 +25,67 @@ export function darkenHexColor(hex: string, amount: number): string {
     .slice(1)
     .toUpperCase()}`;
 }
+
+export enum Card {
+  ACEPIK = "A♠️",
+  ACETREFL = "A♣️",
+  ACECHEART = "A♥️",
+  ACEKARO = "A♦️",
+  TWOTREFL = "2♣️",
+  TWOCHEART = "2♥️",
+  TWOKARO = "2♦️",
+  TWOPIK = "2♠️",
+  THREETREFL = "3♣️",
+  THREECHEART = "3♥️",
+  THREEKARO = "3♦️",
+  THREEPIK = "3♠️",
+  FOURTREFL = "4♣️",
+  FOURCHEART = "4♥️",
+  FOURKARO = "4♦️",
+  FOURPIK = "4♠️",
+  FIVETREFL = "5♣️",
+  FIVECHEART = "5♥️",
+  FIVEKARO = "5♦️",
+  FIVEPIK = "5♠️",
+  SIXTREFL = "6♣️",
+  SIXCHEART = "6♥️",
+  SIXKARO = "6♦️",
+  SIXPIK = "6♠️",
+  SEVENTREFL = "7♣️",
+  SEVENCHEART = "7♥️",
+  SEVENKARO = "7♦️",
+  SEVENPIK = "7♠️",
+  EIGHTTREFL = "8♣️",
+  EIGHTCHEART = "8♥️",
+  EIGHTKARO = "8♦️",
+  EIGHTPIK = "8♠️",
+  NINETREFL = "9♣️",
+  NINECHEART = "9♥️",
+  NINEKARO = "9♦️",
+  NINEPIK = "9♠️",
+  TENTREFL = "10♣️",
+  TENCHEART = "10♥️",
+  TENKARO = "10♦️",
+  TENPIK = "10♠️",
+  JACKTREFL = "J♣️",
+  JACKCHEART = "J♥️",
+  JACKKARO = "J♦️",
+  JACKPIK = "J♠️",
+  QUEENTREFL = "Q♣️",
+  QUEENCHEART = "Q♥️",
+  QUEENKARO = "Q♦️",
+  QUEENPIK = "Q♠️",
+  KINGTREFL = "K♣️",
+  KINGCHEART = "K♥️",
+  KINGKARO = "K♦️",
+  KINGPIK = "K♠️",
+}
+
+export function shuffle<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}

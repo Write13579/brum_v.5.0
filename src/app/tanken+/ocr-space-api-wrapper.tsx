@@ -28,9 +28,11 @@ export default function OcrSpaceReader({
           setRes(result);
           setParsedText(result.ParsedResults[0].ParsedText || "NIE ZNALEZIONO");
           console.log(result.ParsedResults[0].ParsedText);
+        } else {
+          console.log("Brak wyników");
         }
       } catch (error) {
-        console.error("Błąd OCR:", error);
+        setParsedText("nie ma resulta");
       }
     };
 
