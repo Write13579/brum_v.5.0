@@ -66,7 +66,7 @@ export function InputyDlaTrasy() {
         (data.srednieSpalanie / 100) *
           data.odleglosc *
           data.cenaPaliwa *
-          (1 + data.procentZaOsobe / 100) +
+          (1 + ( data.liczbaOsob*data.procentZaOsobe / 100)) +
         data.parkingi +
         data.autostrada
       ).toFixed(2)
