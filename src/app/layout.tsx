@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Stick_No_Bills } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { Toaster } from "@/components/ui/toaster";
 
 const stickNoBills = Stick_No_Bills({
   variable: "--font-stick-no-bills",
@@ -19,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pl">
       <body className={`${stickNoBills.variable} antialiased bg-slate-200/75`}>
         <div
           style={{ fontFamily: "var(--font-stick-no-bills" }}
@@ -27,7 +28,8 @@ export default function RootLayout({
         >
           <Link href={"/"}>Herzlich willkommen</Link>
         </div>
-        {children}
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );

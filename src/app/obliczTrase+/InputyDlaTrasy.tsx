@@ -22,11 +22,12 @@ import { MultiSelect } from "@/components/ui/mulitSelect";
 import { List, Pencil } from "lucide-react";
 import { Odleglosc } from "@/lib/database/schema";
 import DodajTrase from "./dodajTrase";
+import { getRouteLength, getRouteValue, RouteValue } from "@/lib/utils";
 
 const FormSchema = z.object({
   srednieSpalanie: z.coerce.number(),
   cenaPaliwa: z.coerce.number(),
-  odleglosc: z.coerce.number(),
+  odleglosc: z.number(),
   liczbaOsob: z.coerce
     .number()
     .min(1, { message: "Nie może być mniej niż 1 osoba debilu" })
@@ -90,14 +91,14 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
 
   const convertedTrasy = trasy.map((trasa) => ({
     label: `${trasa.startTrasy} -> ${trasa.koniecTrasy}`,
-    value: trasa.odleglosc.toString(),
+    value: getRouteValue(trasa),
     id: trasa.id,
   }));
 
   useEffect(() => {
     if (wybraneTrasy.length > 0) {
       const totalDistance = wybraneTrasy.reduce(
-        (acc, curr) => acc + parseFloat(curr),
+        (acc, curr) => acc + getRouteLength(curr as RouteValue),
         0
       );
       form.setValue("odleglosc", totalDistance);

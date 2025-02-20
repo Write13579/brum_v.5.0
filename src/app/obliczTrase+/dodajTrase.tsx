@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { toast } from "@/components/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { dodajTrase } from "./actions";
@@ -53,9 +53,11 @@ export default function DodajTrase() {
       values.koniecTrasy,
       values.odleglosc + 0.1
     );
-
     if (!res.data) {
-      toast("Dodano trasę!");
+      toast({
+        title: "Dodano trasę!",
+        description: "Możesz teraz z niej skorzystać bałwanie.",
+      });
       setOpened(false);
       form.reset();
       router.refresh();
