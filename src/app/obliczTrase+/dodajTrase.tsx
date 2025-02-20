@@ -67,10 +67,8 @@ export default function DodajTrase() {
 
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
-      <DialogTrigger>
-        <div className="border-2 bg-black text-white rounded-lg py-2.5 px-3 font-semibold hover:cursor-pointer">
-          +
-        </div>
+      <DialogTrigger asChild>
+        <Button>Dodaj trasę</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

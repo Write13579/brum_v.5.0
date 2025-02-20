@@ -111,7 +111,7 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
         Pobierz dane z ostatniego zapisu
       </Button>
       <Form {...form}>
-        <form className="text-nowrap flex flex-col items-center mx-3 gap-1 justify-center">
+        <form className="text-nowrap flex flex-col items-center mx-3 md:mx-auto gap-1 justify-center md:max-w-[700px] md:[&>div]:w-full">
           <FormField
             control={form.control}
             name="srednieSpalanie"
@@ -148,18 +148,21 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
                 <FormLabel>Odległość:</FormLabel>
                 <FormControl>
                   {wybierzTrase ? (
-                    <MultiSelect
-                      options={convertedTrasy}
-                      onValueChange={setWybraneTrasy}
-                      defaultValue={wybraneTrasy}
-                      className="m-auto w-auto"
-                    />
+                    <div className="flex items-center gap-2">
+                      <MultiSelect
+                        options={convertedTrasy}
+                        onValueChange={setWybraneTrasy}
+                        defaultValue={wybraneTrasy}
+                        className="mx-0 w-auto"
+                      />
+                      <DodajTrase />
+                    </div>
                   ) : (
                     <Input className="w-auto" placeholder="100" {...field} />
                   )}
                 </FormControl>
                 {wybierzTrase ? (
-                  <DodajTrase />
+                  <div></div>
                 ) : (
                   <FormDescription>km</FormDescription>
                 )}
