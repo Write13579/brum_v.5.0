@@ -1,10 +1,4 @@
-import {
-  pgTable,
-  serial,
-  varchar,
-  integer,
-  doublePrecision,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, doublePrecision } from "drizzle-orm/pg-core";
 
 export const createEnum = <T extends { [key: string]: string }>(
   e: T

@@ -68,7 +68,7 @@ export default function DodajTrase() {
   return (
     <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>
-        <Button>Dodaj trasę</Button>
+        <Button>+</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
