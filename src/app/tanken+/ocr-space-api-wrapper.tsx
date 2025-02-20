@@ -31,6 +31,7 @@ export default function OcrSpaceReader({
         } else {
           console.log("Brak wyników");
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setParsedText("nie ma resulta");
       }

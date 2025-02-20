@@ -15,6 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import OutputComp from "./outputComp";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/ui/mulitSelect";
+import { List, Pencil } from "lucide-react";
+import { Odleglosc } from "@/lib/database/schema";
+import DodajTrase from "./dodajTrase";
 
 const FormSchema = z.object({
   srednieSpalanie: z.coerce.number(),
@@ -29,7 +36,7 @@ const FormSchema = z.object({
   autostrada: z.coerce.number(),
 });
 
-export function InputyDlaTrasy() {
+export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -77,8 +84,31 @@ export function InputyDlaTrasy() {
     setZaOsobe(zaOsobe);
   }, [data]);
 
+  const [wybierzTrase, setWybierzTrase] = useState(false);
+
+  const [wybraneTrasy, setWybraneTrasy] = useState<string[]>([]);
+
+  const convertedTrasy = trasy.map((trasa) => ({
+    label: `${trasa.startTrasy} -> ${trasa.koniecTrasy}`,
+    value: trasa.odleglosc.toString(),
+    id: trasa.id,
+  }));
+
+  useEffect(() => {
+    if (wybraneTrasy.length > 0) {
+      const totalDistance = wybraneTrasy.reduce(
+        (acc, curr) => acc + parseFloat(curr),
+        0
+      );
+      form.setValue("odleglosc", totalDistance);
+    }
+  }, [wybraneTrasy]);
+
   return (
-    <div className="px-5 m-3">
+    <div className="px-5 m-3 flex flex-col gap-3">
+      <Button className="flex justify-center items-center w-full">
+        Pobierz dane z ostatniego zapisu
+      </Button>
       <Form {...form}>
         <form className="text-nowrap flex flex-col items-center mx-3 gap-1 justify-center">
           <FormField
@@ -116,9 +146,31 @@ export function InputyDlaTrasy() {
               <FormItem className="grid grid-cols-3 m-0 p-0 items-center justify-center">
                 <FormLabel>Odległość:</FormLabel>
                 <FormControl>
-                  <Input className="w-auto" placeholder="100" {...field} />
+                  {wybierzTrase ? (
+                    <MultiSelect
+                      options={convertedTrasy}
+                      onValueChange={setWybraneTrasy}
+                      defaultValue={wybraneTrasy}
+                      className="m-auto w-auto"
+                    />
+                  ) : (
+                    <Input className="w-auto" placeholder="100" {...field} />
+                  )}
                 </FormControl>
-                <FormDescription>km</FormDescription>
+                {wybierzTrase ? (
+                  <DodajTrase />
+                ) : (
+                  <FormDescription>km</FormDescription>
+                )}
+                <div className="flex justify-start items-start w-full gap-2">
+                  <Switch
+                    checked={wybierzTrase}
+                    onCheckedChange={setWybierzTrase}
+                  />
+                  <Label className="flex w-git">
+                    {wybierzTrase ? <Pencil /> : <List />}
+                  </Label>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

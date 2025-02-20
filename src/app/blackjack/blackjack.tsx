@@ -4,8 +4,6 @@ import { Card, shuffle } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { toast } from "@/components/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -40,6 +38,7 @@ export default function Blackjack() {
       .fill(Object.values(Card))
       .flat();
     const shuffledDeck = shuffle(oneFullDeck);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const valuesDeck = shuffledDeck
       .map((card) => card.slice(0, -2))
       .map((card) => (["J", "Q", "K"].includes(card) ? "10" : card));

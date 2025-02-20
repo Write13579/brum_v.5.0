@@ -5,7 +5,7 @@ export default function Home() {
     <div id="alles">
       <div id="kafle" className="flex flex-col gap-2 ">
         <Link href={"/obliczTrase"}>Straße</Link>
-        <Link href={"/niger"}>Straße+</Link>
+        <Link href={"/obliczTrase+"}>Straße+</Link>
         <Link href={"/niger"}>Tanken</Link>
         <Link href={"/tanken+"}>Tanken+</Link>
         <Link href={"/blackjack"}>Blackjack</Link>
