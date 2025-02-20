@@ -27,6 +27,49 @@ import {
  * Uses class-variance-authority (cva) to define different styles based on "variant" prop.
  */
 
+export function labelShorter(label: string) {
+  let cuttedLabel = label.split(" -> ");
+
+  let slowa1 = cuttedLabel[0].split(" ");
+  let przedNawias1 = slowa1
+    .map((slowo) => {
+      if (slowo.includes("(")) {
+        slowo = "";
+      }
+      return slowo.charAt(0);
+    })
+    .join(".");
+
+  if (cuttedLabel[0].includes("(")) {
+    let nawiasStart = cuttedLabel[0].indexOf("(");
+    let nawiasStop = cuttedLabel[0].indexOf(")");
+    let nawiasTresc = cuttedLabel[0].slice(nawiasStart + 1, nawiasStop);
+    cuttedLabel[0] = `${przedNawias1} (${nawiasTresc.charAt(0)})`;
+  } else {
+    cuttedLabel[0] = przedNawias1 + ".";
+  }
+
+  let slowa2 = cuttedLabel[1].split(" ");
+  let przedNawias2 = slowa2
+    .map((slowo) => {
+      if (slowo.includes("(")) {
+        slowo = "";
+      }
+      return slowo.charAt(0);
+    })
+    .join(".");
+
+  if (cuttedLabel[1].includes("(")) {
+    let nawiasStart = cuttedLabel[1].indexOf("(");
+    let nawiasStop = cuttedLabel[1].indexOf(")");
+    let nawiasTresc = cuttedLabel[1].slice(nawiasStart + 1, nawiasStop);
+    cuttedLabel[1] = `${przedNawias2} (${nawiasTresc.charAt(0)})`;
+  } else {
+    cuttedLabel[1] = przedNawias2 + ".";
+  }
+  return cuttedLabel.join(" -> ").toUpperCase();
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const multiSelectVariants = cva(
   "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",
@@ -66,6 +109,7 @@ interface MultiSelectProps
     /** Optional icon component to display alongside the option. */
     icon?: React.ComponentType<{ className?: string }>;
     id?: number;
+    shorterLabel?: string;
   }[];
 
   /**
@@ -211,11 +255,14 @@ export const MultiSelect = React.forwardRef<
                     const option = options.find((o) => o.value === value);
                     return (
                       <div
+                        className="max-w-24"
                         key={`${option?.id}-${option?.label}` || option?.label}
                       >
-                        <div>{option?.label}</div>
+                        <div className="text-blue-500">
+                          {labelShorter(option?.shorterLabel || option!.label)}
+                        </div>
                         <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                          className="ml-2 h-4 w-4 cursor-pointer text-red-500"
                           onClick={(event) => {
                             event.stopPropagation();
                             toggleOption(value);

@@ -94,7 +94,7 @@ export function shuffle<T>(array: T[]): T[] {
 export type RouteValue = `${number}|${number}`;
 
 export function getRouteValue(trasa: Odleglosc) {
-  return `${trasa.id}|${trasa.odleglosc}` as RouteValue;
+  return `${trasa.id}|${trasa.odleglosc}|${trasa.startTrasy} -> ${trasa.koniecTrasy}` as RouteValue;
 }
 
 export function getRouteLength(routeValue: RouteValue) {

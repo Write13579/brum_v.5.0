@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/mulitSelect";
-import { List, Pencil } from "lucide-react";
+import { Circle, List, LoaderPinwheel, Pencil } from "lucide-react";
 import { Odleglosc } from "@/lib/database/schema";
 import DodajTrase from "./dodajTrase";
 import { getRouteLength, getRouteValue, RouteValue } from "@/lib/utils";
@@ -90,7 +90,10 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
   const [wybraneTrasy, setWybraneTrasy] = useState<string[]>([]);
 
   const convertedTrasy = trasy.map((trasa) => ({
-    label: `${trasa.startTrasy} -> ${trasa.koniecTrasy}`,
+    shorterLabel: `${trasa.startTrasy} -> ${trasa.koniecTrasy}`,
+    label: `${trasa.startTrasy} -> ${
+      trasa.koniecTrasy
+    } (${trasa.odleglosc.toFixed(1)}km)`,
     value: getRouteValue(trasa),
     id: trasa.id,
   }));
@@ -104,6 +107,8 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
       form.setValue("odleglosc", totalDistance);
     }
   }, [wybraneTrasy]);
+
+  const [advancedDlaOsob, setAdvancedDlaOsob] = useState(false);
 
   return (
     <div className="px-5 m-3 flex flex-col gap-3">
@@ -268,6 +273,25 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
         />
         <OutputComp liczba={zaOsobe} opis="Za osobę" kolor="#d8b4fe" />
       </div>
+      <div
+        id="advancedDlaOsob"
+        className="flex justify-center items-center gap-2"
+      >
+        <Switch
+          checked={advancedDlaOsob}
+          onCheckedChange={setAdvancedDlaOsob}
+        />
+        <Label className="flex w-git">
+          {!advancedDlaOsob ? <Circle /> : <LoaderPinwheel />}
+        </Label>
+      </div>
+
+      {advancedDlaOsob &&
+        wybraneTrasy.map((trasa) => {
+          const podzialTrasy = trasa.split("|");
+          const labelTrasy = podzialTrasy[2] + " (" + podzialTrasy[1] + "km)";
+          return <div key={trasa}>{labelTrasy}</div>;
+        })}
     </div>
   );
 }
