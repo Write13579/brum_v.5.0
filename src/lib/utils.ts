@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Odleglosc } from "./database/schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -88,4 +89,14 @@ export function shuffle<T>(array: T[]): T[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+export type RouteValue = `${number}|${number}`;
+
+export function getRouteValue(trasa: Odleglosc) {
+  return `${trasa.id}|${trasa.odleglosc}` as RouteValue;
+}
+
+export function getRouteLength(routeValue: RouteValue) {
+  return parseFloat(routeValue.split("|")[1]);
 }
