@@ -23,6 +23,7 @@ import { Circle, List, LoaderPinwheel, Pencil } from "lucide-react";
 import { Odleglosc } from "@/lib/database/schema";
 import DodajTrase from "./dodajTrase";
 import { getRouteLength, getRouteValue, RouteValue } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
   srednieSpalanie: z.coerce.number(),
@@ -106,9 +107,24 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
       );
       form.setValue("odleglosc", totalDistance);
     }
+
+    setCheckedBoxes(
+      [...Array(wybraneTrasy.length)].map(() => [
+        false,
+        false,
+        false,
+        false,
+        false,
+      ])
+    );
+
+    console.log("useeffect active");
   }, [wybraneTrasy]);
 
+  //ADVANCED
   const [advancedDlaOsob, setAdvancedDlaOsob] = useState(false);
+
+  const [checkedBoxes, setCheckedBoxes] = useState<boolean[][]>([]);
 
   return (
     <div className="px-5 m-3 flex flex-col gap-3">
@@ -285,13 +301,74 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
           {!advancedDlaOsob ? <Circle /> : <LoaderPinwheel />}
         </Label>
       </div>
+      {advancedDlaOsob && (
+        <div className="flex flex-col gap-2 items-center">
+          <div className="flex flex-row gap-6 justify-center items-center font-bold sticky top-0 left-0 bg-white/80 p-2 rounded-lg">
+            <div className="w-8 text-center">1</div>
+            <div className="w-8 text-center">2</div>
+            <div className="w-8 text-center">3</div>
+            <div className="w-8 text-center">4</div>
+            <div className="w-8 text-center">5</div>
+            <div className="w-24 text-center">kierunek</div>
+          </div>
+          <div className="flex flex-row gap-6 justify-center items-center font-bold mb-3 sticky top-0 left-0 bg-white/80 p-2 rounded-lg">
+            <div className="w-8 text-center">{}</div>
+            <div className="w-8 text-center">{}</div>
+            <div className="w-8 text-center">{}</div>
+            <div className="w-8 text-center">{}</div>
+            <div className="w-8 text-center">{}</div>
+            <div className="w-24 text-center"></div>
+          </div>
+          {wybraneTrasy.map((trasa, idx) => {
+            const podzialTrasy = trasa.split("|"); // kierunek|odleglosc
+            const labelTrasy =
+              podzialTrasy[2] +
+              " (" +
+              parseFloat(podzialTrasy[1]).toFixed(2) +
+              "km)";
 
-      {advancedDlaOsob &&
-        wybraneTrasy.map((trasa) => {
-          const podzialTrasy = trasa.split("|");
-          const labelTrasy = podzialTrasy[2] + " (" + podzialTrasy[1] + "km)";
-          return <div key={trasa}>{labelTrasy}</div>;
-        })}
+            const zaOsobeAdvWiersz =
+              parseFloat(
+                (
+                  (data.srednieSpalanie / 100) *
+                    data.odleglosc *
+                    data.cenaPaliwa *
+                    (1 + (data.liczbaOsob * data.procentZaOsobe) / 100) +
+                  data.parkingi +
+                  data.autostrada
+                ).toFixed(2)
+              ) / data.liczbaOsob;
+
+            return (
+              <div
+                key={trasa}
+                className="flex flex-row gap-6 justify-center items-center my-1 p-0.5 border bg-slate-200 rounded-sm"
+              >
+                {[0, 1, 2, 3, 4].map((rowIdx) => (
+                  <div
+                    key={rowIdx}
+                    className="w-8 flex justify-center items-center"
+                  >
+                    <Checkbox
+                      checked={checkedBoxes[idx][rowIdx]}
+                      onCheckedChange={(e) => {
+                        console.log(e);
+
+                        setCheckedBoxes((old) => {
+                          old[idx][rowIdx] = e as boolean;
+                          return old;
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+
+                <div className="w-24 text-center">{labelTrasy}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
