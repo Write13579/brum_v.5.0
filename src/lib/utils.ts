@@ -91,7 +91,7 @@ export function shuffle<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export type RouteValue = `${number}|${number}`;
+export type RouteValue = `${number}|${number}|${string}`;
 
 export function getRouteValue(trasa: Odleglosc) {
   return `${trasa.id}|${trasa.odleglosc}|${trasa.startTrasy} -> ${trasa.koniecTrasy}` as RouteValue;
@@ -99,4 +99,8 @@ export function getRouteValue(trasa: Odleglosc) {
 
 export function getRouteLength(routeValue: RouteValue) {
   return parseFloat(routeValue.split("|")[1]);
+}
+
+export function getRoutePath(routeValue: RouteValue) {
+  return routeValue.split("|")[2];
 }
