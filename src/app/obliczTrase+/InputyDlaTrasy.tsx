@@ -22,7 +22,12 @@ import { MultiSelect } from "@/components/ui/mulitSelect";
 import { Circle, List, LoaderPinwheel, Pencil } from "lucide-react";
 import { Odleglosc } from "@/lib/database/schema";
 import DodajTrase from "./dodajTrase";
-import { getRouteLength, getRouteValue, RouteValue } from "@/lib/utils";
+import {
+  getRouteLength,
+  getRoutePath,
+  getRouteValue,
+  RouteValue,
+} from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
@@ -117,74 +122,49 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
         false,
       ])
     );
-  }, [wybraneTrasy]);
+  }, [wybraneTrasy, form]);
 
   //ADVANCED
   const [advancedDlaOsob, setAdvancedDlaOsob] = useState(false);
-
   const [checkedBoxes, setCheckedBoxes] = useState<boolean[][]>([]); //wszystkie boxy
-
-  const [sumyOsobAdv, setSumyOsobAdv] = useState<number[]>([]); //ile jest osob w row
-
-  const [sumyCenZaOsobeInEveryRowAdv, setSumyCenZaOsobeInEveryRowAdv] =
-    useState<number[]>([]);
-
   const [sumyCenOsobAdv, setSumyCenOsobAdv] = useState<number[]>([
     0, 0, 0, 0, 0,
   ]);
 
   useEffect(() => {
-    checkedBoxes.map((_, idx) => {
-      const liczbaTrue = checkedBoxes[idx]
-        ? checkedBoxes[idx].filter((box) => box === true).length
-        : 0;
-      setSumyOsobAdv((prev) => {
-        const newTab = [...prev];
-        newTab[idx] = liczbaTrue;
-        return newTab;
-      });
-      //console.log("sumy: " + sumyOsobAdv);
-    });
-    //console.log("boxes: " + checkedBoxes);
+    const sumyOsobAdv = checkedBoxes.map((row) =>
+      row ? row.filter(Boolean).length : 0
+    );
 
-    wybraneTrasy.map((trasa, idx) => {
-      //sumyOsobAdv[idx] === 0 ? 0 :
-      const podzialTrasy = trasa.split("|"); // kierunek|odleglosc
-      const odlegloscTrasy = podzialTrasy[1];
-
-      const cenaZaOsobe =
-        sumyOsobAdv[idx] === 0
-          ? 0
-          : parseFloat(
-              (
-                (data.srednieSpalanie / 100) *
-                parseFloat(odlegloscTrasy) *
-                data.cenaPaliwa *
-                (1 + (sumyOsobAdv[idx] * data.procentZaOsobe) / 100)
-              ).toFixed(2)
-            ) / sumyOsobAdv[idx];
-
-      //console.log(idx + ". " + cenaZaOsobe);
-
-      setSumyCenZaOsobeInEveryRowAdv((prev) => {
-        const newTab = [...prev];
-        newTab[idx] = cenaZaOsobe;
-        return newTab;
-      });
+    const sumyCenZaOsobeInEveryRowAdv = wybraneTrasy.map((trasa, idx) => {
+      const odlegloscTrasy = getRouteLength(trasa as RouteValue);
+      return sumyOsobAdv[idx] === 0
+        ? 0
+        : parseFloat(
+            (
+              (data.srednieSpalanie / 100) *
+              odlegloscTrasy *
+              data.cenaPaliwa *
+              (1 + (sumyOsobAdv[idx] * data.procentZaOsobe) / 100)
+            ).toFixed(2)
+          ) / sumyOsobAdv[idx];
     });
 
-    const newSumyCenOsobAdv = [0, 0, 0, 0, 0];
-    checkedBoxes.forEach((rowOfBoxes, idx) => {
+    const newSumyCenOsobAdv = checkedBoxes.reduce((acc, rowOfBoxes, idx) => {
       rowOfBoxes.forEach((box, rowIdx) => {
-        if (box) {
-          newSumyCenOsobAdv[rowIdx] += sumyCenZaOsobeInEveryRowAdv[idx];
-        }
+        if (box) acc[rowIdx] += sumyCenZaOsobeInEveryRowAdv[idx];
       });
-    });
-    setSumyCenOsobAdv(newSumyCenOsobAdv);
+      return acc;
+    }, Array(5).fill(0));
 
-    console.log(sumyCenOsobAdv);
-  }, [checkedBoxes]);
+    setSumyCenOsobAdv(newSumyCenOsobAdv);
+  }, [
+    checkedBoxes,
+    wybraneTrasy,
+    data.cenaPaliwa,
+    data.srednieSpalanie,
+    data.procentZaOsobe,
+  ]);
 
   return (
     <div className="px-5 m-3 flex flex-col gap-3">
@@ -234,7 +214,7 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
                         options={convertedTrasy}
                         onValueChange={setWybraneTrasy}
                         defaultValue={wybraneTrasy}
-                        className="mx-0 w-auto"
+                        className="bg-white text-black hover:bg-white"
                       />
                       <DodajTrase />
                     </div>
@@ -372,75 +352,45 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
             <div className="w-24 text-center">kierunek</div>
           </div>
           <div className="flex flex-row gap-6 justify-center items-center font-bold mb-3 sticky top-0 left-0 bg-white/80 p-2 rounded-lg">
-            <div className="w-8 text-center">
-              {sumyCenOsobAdv[0].toFixed(2)}zł
-            </div>
-            <div className="w-8 text-center">
-              {sumyCenOsobAdv[1].toFixed(2)}zł
-            </div>
-            <div className="w-8 text-center">
-              {sumyCenOsobAdv[2].toFixed(2)}zł
-            </div>
-            <div className="w-8 text-center">
-              {sumyCenOsobAdv[3].toFixed(2)}zł
-            </div>
-            <div className="w-8 text-center">
-              {sumyCenOsobAdv[4].toFixed(2)}zł
-            </div>
+            {[0, 1, 2, 3, 4].map((idx) => (
+              <div key={idx} className="w-8 text-center">
+                {sumyCenOsobAdv[idx].toFixed(2)}zł
+              </div>
+            ))}
             <div className="w-24 text-center">
               suma:{" "}
               {sumyCenOsobAdv.reduce((acc, num) => acc + num, 0).toFixed(2)}zł
             </div>
           </div>
-          {wybraneTrasy.map((trasa, idx) => {
-            const podzialTrasy = trasa.split("|"); // kierunek|odleglosc
-            const labelTrasy =
-              podzialTrasy[2] +
-              " (" +
-              parseFloat(podzialTrasy[1]).toFixed(2) +
-              "km)";
+          {wybraneTrasy.map((trasa, idx) => (
+            <div
+              key={trasa}
+              className="flex flex-row gap-6 justify-center items-center my-1 p-0.5 border bg-slate-200 rounded-sm"
+            >
+              {[0, 1, 2, 3, 4].map((rowIdx) => (
+                <div
+                  key={rowIdx}
+                  className="w-8 flex justify-center items-center"
+                >
+                  <Checkbox
+                    checked={checkedBoxes[idx][rowIdx]}
+                    onCheckedChange={(e) => {
+                      setCheckedBoxes((old) => {
+                        const newCheckedBoxes = [...old]; // Tworzymy nową tablicę
+                        newCheckedBoxes[idx] = [...newCheckedBoxes[idx]]; // Tworzymy nową tablicę dla wiersza
+                        newCheckedBoxes[idx][rowIdx] = e as boolean; // Aktualizujemy wartość checkboxa
+                        return newCheckedBoxes;
+                      });
+                    }}
+                  />
+                </div>
+              ))}
 
-            // const zaOsobeAdvWiersz = !checkedBoxes[idx]
-            //   ? 0
-            //   : parseFloat(
-            //       (
-            //         (data.srednieSpalanie / 100) *
-            //         parseFloat(podzialTrasy[1]) *
-            //         data.cenaPaliwa *
-            //         (1 + (checkedBoxes[idx].length * data.procentZaOsobe) / 100)
-            //       ).toFixed(2)
-            //     ) / checkedBoxes[idx].length;
-
-            //console.log(zaOsobeAdvWiersz);
-
-            return (
-              <div
-                key={trasa}
-                className="flex flex-row gap-6 justify-center items-center my-1 p-0.5 border bg-slate-200 rounded-sm"
-              >
-                {[0, 1, 2, 3, 4].map((rowIdx) => (
-                  <div
-                    key={rowIdx}
-                    className="w-8 flex justify-center items-center"
-                  >
-                    <Checkbox
-                      checked={checkedBoxes[idx][rowIdx]}
-                      onCheckedChange={(e) => {
-                        setCheckedBoxes((old) => {
-                          const newCheckedBoxes = [...old]; // Tworzymy nową tablicę
-                          newCheckedBoxes[idx] = [...newCheckedBoxes[idx]]; // Tworzymy nową tablicę dla wiersza
-                          newCheckedBoxes[idx][rowIdx] = e as boolean; // Aktualizujemy wartość checkboxa
-                          return newCheckedBoxes;
-                        });
-                      }}
-                    />
-                  </div>
-                ))}
-
-                <div className="w-24 text-center">{labelTrasy}</div>
-              </div>
-            );
-          })}
+              <div className="w-24 text-center">{`${getRoutePath(
+                trasa as RouteValue
+              )} (${getRouteLength(trasa as RouteValue)} km)`}</div>
+            </div>
+          ))}
         </div>
       )}
     </div>
