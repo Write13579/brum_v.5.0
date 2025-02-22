@@ -28,10 +28,10 @@ import {
  */
 
 export function labelShorter(label: string) {
-  let cuttedLabel = label.split(" -> ");
+  const cuttedLabel = label.split(" -> ");
 
-  let slowa1 = cuttedLabel[0].split(" ");
-  let przedNawias1 = slowa1
+  const slowa1 = cuttedLabel[0].split(" ");
+  const przedNawias1 = slowa1
     .map((slowo) => {
       if (slowo.includes("(")) {
         slowo = "";
@@ -41,16 +41,16 @@ export function labelShorter(label: string) {
     .join(".");
 
   if (cuttedLabel[0].includes("(")) {
-    let nawiasStart = cuttedLabel[0].indexOf("(");
-    let nawiasStop = cuttedLabel[0].indexOf(")");
-    let nawiasTresc = cuttedLabel[0].slice(nawiasStart + 1, nawiasStop);
+    const nawiasStart = cuttedLabel[0].indexOf("(");
+    const nawiasStop = cuttedLabel[0].indexOf(")");
+    const nawiasTresc = cuttedLabel[0].slice(nawiasStart + 1, nawiasStop);
     cuttedLabel[0] = `${przedNawias1} (${nawiasTresc.charAt(0)})`;
   } else {
     cuttedLabel[0] = przedNawias1 + ".";
   }
 
-  let slowa2 = cuttedLabel[1].split(" ");
-  let przedNawias2 = slowa2
+  const slowa2 = cuttedLabel[1].split(" ");
+  const przedNawias2 = slowa2
     .map((slowo) => {
       if (slowo.includes("(")) {
         slowo = "";
@@ -60,9 +60,9 @@ export function labelShorter(label: string) {
     .join(".");
 
   if (cuttedLabel[1].includes("(")) {
-    let nawiasStart = cuttedLabel[1].indexOf("(");
-    let nawiasStop = cuttedLabel[1].indexOf(")");
-    let nawiasTresc = cuttedLabel[1].slice(nawiasStart + 1, nawiasStop);
+    const nawiasStart = cuttedLabel[1].indexOf("(");
+    const nawiasStop = cuttedLabel[1].indexOf(")");
+    const nawiasTresc = cuttedLabel[1].slice(nawiasStart + 1, nawiasStop);
     cuttedLabel[1] = `${przedNawias2} (${nawiasTresc.charAt(0)})`;
   } else {
     cuttedLabel[1] = przedNawias2 + ".";
