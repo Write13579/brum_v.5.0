@@ -150,10 +150,31 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
           ) / sumyOsobAdv[idx];
     });
 
+    const najwiecejOsobWAucie =
+      sumyOsobAdv.length === 0 ? 1 : Math.max(...sumyOsobAdv);
+    let dodano = false;
+
     const newSumyCenOsobAdv = checkedBoxes.reduce((acc, rowOfBoxes, idx) => {
       rowOfBoxes.forEach((box, rowIdx) => {
-        if (box) acc[rowIdx] += sumyCenZaOsobeInEveryRowAdv[idx];
+        if (box) {
+          acc[rowIdx] += sumyCenZaOsobeInEveryRowAdv[idx];
+        }
       });
+
+      if (!dodano) {
+        [0, 1, 2, 3, 4].map((_, idx5) => {
+          const verticalLinesOfBoxes = rowOfBoxes.map((box) => box);
+
+          verticalLinesOfBoxes[idx5] &&
+            (acc[idx5] +=
+              (data.parkingi + data.autostrada) /
+              (najwiecejOsobWAucie === 0 ? 1 : najwiecejOsobWAucie));
+          console.log(acc[idx5]);
+        });
+        dodano = true;
+      }
+      console.log();
+
       return acc;
     }, Array(5).fill(0));
 
@@ -164,6 +185,8 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
     data.cenaPaliwa,
     data.srednieSpalanie,
     data.procentZaOsobe,
+    data.parkingi,
+    data.autostrada,
   ]);
 
   return (
@@ -372,23 +395,25 @@ export function InputyDlaTrasy({ trasy }: { trasy: Odleglosc[] }) {
                   key={rowIdx}
                   className="w-8 flex justify-center items-center"
                 >
-                  <Checkbox
-                    checked={checkedBoxes[idx][rowIdx]}
-                    onCheckedChange={(e) => {
-                      setCheckedBoxes((old) => {
-                        const newCheckedBoxes = [...old]; // Tworzymy nową tablicę
-                        newCheckedBoxes[idx] = [...newCheckedBoxes[idx]]; // Tworzymy nową tablicę dla wiersza
-                        newCheckedBoxes[idx][rowIdx] = e as boolean; // Aktualizujemy wartość checkboxa
-                        return newCheckedBoxes;
-                      });
-                    }}
-                  />
+                  {checkedBoxes[idx] && (
+                    <Checkbox
+                      checked={checkedBoxes[idx][rowIdx]}
+                      onCheckedChange={(e) => {
+                        setCheckedBoxes((old) => {
+                          const newCheckedBoxes = [...old]; // Tworzymy nową tablicę
+                          newCheckedBoxes[idx] = [...newCheckedBoxes[idx]]; // Tworzymy nową tablicę dla wiersza
+                          newCheckedBoxes[idx][rowIdx] = e as boolean; // Aktualizujemy wartość checkboxa
+                          return newCheckedBoxes;
+                        });
+                      }}
+                    />
+                  )}
                 </div>
               ))}
 
               <div className="w-24 text-center">{`${getRoutePath(
                 trasa as RouteValue
-              )} (${getRouteLength(trasa as RouteValue)} km)`}</div>
+              )} (${getRouteLength(trasa as RouteValue).toFixed(2)} km)`}</div>
             </div>
           ))}
         </div>
